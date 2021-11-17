@@ -48,7 +48,7 @@
                     </mat-list-item>
                 </mat-list>
             </div>
-            <button fxFlex="10" class="clearBtn">Clear</button>
+            <button fxFlex="10" class="clearBtn" (click)="clearList('dimension')">Clear</button>
         </div>
 
         <div class="plotterColumnType" fxLayout="row" fxLayoutAlign="start center" >
@@ -73,7 +73,16 @@
 
                 </mat-list>
             </div>
-            <button fxFlex="10" class="clearBtn">Clear</button>
+            <button fxFlex="10" class="clearBtn" (click)="clearList('measure')">Clear</button>
+        </div>
+        <div>
+            <highcharts-chart
+                    [Highcharts]="Highcharts"
+                    [options]="optFromInput"
+                    [(update)]="updateFromInput"
+                    [oneToOne]=true
+                    (chartInstance)="logChartInstance($event)"
+            ></highcharts-chart>
         </div>
     </div>
 </div>

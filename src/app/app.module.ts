@@ -8,6 +8,10 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {DndModule} from 'ngx-drag-drop';
+import {HighchartsChartModule} from 'highcharts-angular';
+import {NgxSpinnerModule} from 'ngx-spinner';
+import {ToastrModule} from 'ngx-toastr';
+
 @NgModule({
     declarations: [
         AppComponent
@@ -21,7 +25,17 @@ import {DndModule} from 'ngx-drag-drop';
         MaterialsModule,
         DndModule,
         FlexLayoutModule,
+        HighchartsChartModule,
         ReactiveFormsModule,
+        ToastrModule.forRoot(
+            {
+                disableTimeOut: true,
+                positionClass: 'toast-bottom-right',
+                closeButton: true,
+                maxOpened: 1
+            }
+        ),
+        NgxSpinnerModule
     ],
     providers: [],
     bootstrap: [AppComponent]

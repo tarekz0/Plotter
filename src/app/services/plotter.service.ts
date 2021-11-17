@@ -10,7 +10,11 @@ export class PlotterService {
     constructor(private http: HttpClient) {
     }
 
-    public getPlotterColumns() {
+    getPlotterColumns() {
         return this.http.get(environment.url + 'columns');
+    }
+
+    getColumnsData(columnsForm) {
+        return this.http.post(environment.url + 'data', columnsForm);
     }
 }
