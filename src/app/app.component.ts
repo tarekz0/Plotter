@@ -16,33 +16,12 @@ export class AppComponent implements OnInit {
     public dimensions: string[] = [];
     public measures: string[] = [];
     Highcharts: typeof Highcharts = Highcharts;
-
-    optFromInputString: string = `
-  {
-    "title": { "text": "Highcharts chart" },
-    "series": [{
-      "data": [11,2,3],
-      "zones": [{
-        "value": 7.2,
-        "dashStyle": "dot",
-        "color": "red"
-      }]
-    }, {
-      "data": [5,6,7]
-    }]
-  }
-  `;
-
-    optFromInput: Highcharts.Options = JSON.parse(this.optFromInputString);
-    updateFromInput: boolean = false;
-    seriesTypes: { [key: string]: string } = {
-        line: 'column',
-        column: 'scatter',
-        scatter: 'spline',
-        spline: 'line'
-    };
-    columnsForm: any;
-
+    columnsForm = {};
+    columnDataResult: any;
+    chartSeries = [];
+    chartCategories = [];
+    chartOptions: any;
+    updateFlag = false;
     constructor(private pService: PlotterService, private spinner: NgxSpinnerService, private toastr: ToastrService) {
     }
 
@@ -52,7 +31,7 @@ export class AppComponent implements OnInit {
                 this.columnsList = result;
             },
             error => {
-
+                this.toastr.error(error.message, 'Failed', );
             },
         );
     }
@@ -94,42 +73,96 @@ export class AppComponent implements OnInit {
         if (type === 'dimension') {
             this.columnsList = [...this.columnsList, ...this.dimensions];
             this.dimensions = [];
+            this.columnsForm['dimension'] = '';
         } else {
             this.columnsList = [...this.columnsList, ...this.measures];
             this.measures = [];
+            this.columnsForm['measures'] = [];
         }
-    }
-
-    logChartInstance(chart: Highcharts.Chart) {
-        console.log('Chart instance: ', chart);
-    }
-
-    updateInputChart() {
-        this.optFromInput = JSON.parse(this.optFromInputString);
-    }
-
-    toggleSeriesType(index: number = 0) {
-        this.optFromInput.series[index].type =
-            this.seriesTypes[this.optFromInput.series[index].type || 'line'] as
-                'column' | 'scatter' | 'spline' | 'line';
-        // nested change - must trigger update
-        this.updateFromInput = true;
+        this.columnsData();
     }
 
     columnsData() {
-        this.columnsForm['dimension'] = this.dimensions[0]['name'];
         this.columnsForm['measures'] = [];
-        for (let measure in this.measures) {
-            this.columnsForm['measures'].push(measure['name']);
+        this.columnDataResult = undefined;
+        this.chartSeries = [];
+        this.chartCategories = [];
+        for (let dimension in this.dimensions) {
+            this.columnsForm['dimension'] = this.dimensions[dimension]['name'];
         }
+        for (let measure in this.measures) {
+            this.columnsForm['measures'].push(this.measures[measure]['name']);
+        }
+        if (this.columnsForm['measures'].length > 0 && this.columnsForm['dimension']) {
+            this.pService.getColumnsData(this.columnsForm).subscribe(
+                result => {
+                    this.columnDataResult = result;
+                    for (let i = 0; i < this.columnDataResult.length; i++) {
+                        if (this.columnDataResult[i].name === this.columnsForm['dimension']) {
+                            this.chartCategories = this.columnDataResult[i].values;
+                        } else {
+                            this.columnDataResult[i]['data'] = this.columnDataResult[i]['values'];
+                            delete this.columnDataResult[i]['values'];
+                            this.chartSeries.push(this.columnDataResult[i]);
+                        }
+                    }
+                    this.applyChart();
+                },
+                error => {
+                    this.toastr.error(error.message, 'Failed', );
+                },
+            );
+        }
+    }
 
-        this.pService.getColumnsData(this.columnsForm).subscribe(
-            result => {
-                this.columnsList = result;
+    applyChart() {
+        this.chartOptions = {
+            chart: {
+                type: 'line'
             },
-            error => {
-
+            title: {
+                text: ''
             },
-        );
+            xAxis: {
+                categories: this.chartCategories
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                }
+            },
+            series: this.chartSeries,
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 700
+                    },
+                    chartOptions: {
+                        legend: {
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            layout: 'horizontal'
+                        },
+                        yAxis: {
+                            labels: {
+                                align: 'left',
+                                x: 0,
+                                y: 0
+                            },
+                            title: {
+                                text: null
+                            }
+                        },
+                        subtitle: {
+                            text: null
+                        },
+                        credits: {
+                            enabled: false
+                        }
+                    }
+                }]
+            }
+        };
+        this.updateFlag = true;
     }
 }
