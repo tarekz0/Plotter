@@ -1,19 +1,18 @@
+<ngx-spinner bdOpacity=0.6 bdColor="rgba(51,51,51,0.85)" size="medium" color="#fff" type="ball-newton-cradle"
+             [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>
 <div class="header">
     <h1>Plotter</h1>
 </div>
 <div class="row" xLayout="row" fxFill="fill">
     <div class="side">
         <h2 class="side-title">Columns</h2>
-        <div fxLayout="column" class="allColumns" fxFill="fill">
+        <div fxLayout="column" class="allColumns">
             <mat-list dndDropzone
                       dndEffectAllowed="move"
                       (dndDrop)="onDrop($event, columnsList, 'columnsList')"
                       class="dndList">
-
-                <mat-list-item dndPlaceholderRef
-                               class="dndPlaceholder">
-                </mat-list-item>
-
                 <mat-list-item *ngFor="let column of columnsList"
                                [dndDraggable]="column"
                                [dndType]="column.function"
@@ -22,23 +21,17 @@
                                (dndMoved)="onDragged($event, column, columnsList)">
                     <h3 mat-line>{{column.name}}</h3>
                 </mat-list-item>
-
             </mat-list>
-
         </div>
-
     </div>
     <div class="main">
-        <div class="plotterColumnType" fxLayout="row" fxLayoutAlign="start center" >
+        <div class="plotterColumnType" fxLayout="row" fxLayoutAlign="start center">
             <label fxFlex="12">Dimensions</label>
             <div fxFlex="60" class="dropArea">
                 <mat-list [dndDropzone]="['dimension']"
                           dndEffectAllowed="move"
                           (dndDrop)="onDrop($event, dimensions, 'dimension')"
                           class="dndList dndList-blocks">
-                    <mat-list-item dndPlaceholderRef
-                                   class="dndPlaceholder">
-                    </mat-list-item>
                     <mat-list-item *ngFor="let dimension of dimensions"
                                    [dndDraggable]="dimension"
                                    [dndType]="dimension"
@@ -51,18 +44,13 @@
             <button fxFlex="10" class="clearBtn" (click)="clearList('dimension')">Clear</button>
         </div>
 
-        <div class="plotterColumnType" fxLayout="row" fxLayoutAlign="start center" >
+        <div class="plotterColumnType" fxLayout="row" fxLayoutAlign="start center">
             <label fxFlex="12" class="">Measures</label>
             <div fxFlex="60" class="dropArea">
                 <mat-list [dndDropzone]="['measure']"
                           dndEffectAllowed="move"
                           (dndDrop)="onDrop($event, measures, 'measure')"
                           class="dndList dndList-blocks">
-
-                    <mat-list-item dndPlaceholderRef
-                                   class="dndPlaceholder">
-                    </mat-list-item>
-
                     <mat-list-item *ngFor="let measure of measures"
                                    [dndDraggable]="measure"
                                    [dndType]="measure"
@@ -70,7 +58,6 @@
                                    (dndMoved)="onDragged($event, measure, measures)">
                         <h1 mat-line>{{measure.name}}</h1>
                     </mat-list-item>
-
                 </mat-list>
             </div>
             <button fxFlex="10" class="clearBtn" (click)="clearList('measure')">Clear</button>
@@ -78,7 +65,7 @@
         <div class="chartArea" *ngIf="columnDataResult">
             <highcharts-chart
                     [Highcharts]="Highcharts"
-                    [options] = "chartOptions"
+                    [options]="chartOptions"
                     [(update)]="updateFlag"
             ></highcharts-chart>
         </div>

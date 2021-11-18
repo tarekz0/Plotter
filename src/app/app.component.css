@@ -20,6 +20,7 @@
     flex: 75%;
     background-color: white;
     padding: 20px;
+    min-height: 700px;
 }
 
 .side-title {
@@ -60,8 +61,9 @@
 }
 
 .mat-list-base .mat-list-item, .mat-list-base .mat-list-option {
-    height: 30px;
+    height: 50px;
     cursor: pointer;
+    margin: 10px 0;
 }
 
 .dropArea {
@@ -73,8 +75,10 @@
 }
 
 .dndList-blocks .mat-list-item, .dndList-blocks .mat-list-option {
+    height: 30px;
     width: 150px;
     display: inline-block;
+    margin: 2px;
 }
 
 .plotterColumnType {

@@ -27,12 +27,15 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.spinner.show();
         this.pService.getPlotterColumns().subscribe(
             result => {
                 this.columnsList = result;
+                this.spinner.hide();
             },
             error => {
-                this.toastr.error(error.message, 'Failed',);
+                this.toastr.error(error.message, 'Failed');
+                this.spinner.hide();
             },
         );
     }
@@ -80,14 +83,14 @@ export class AppComponent implements OnInit {
             this.measures = [];
             this.columnsForm['measures'] = [];
         }
-        this.columnDataResult = undefined;
-        this.chartSeries = [];
-        this.chartCategories = [];
         this.columnsData();
     }
 
     columnsData() {
         this.columnsForm['measures'] = [];
+        this.columnDataResult = undefined;
+        this.chartSeries = [];
+        this.chartCategories = [];
         for (let dimension in this.dimensions) {
             this.columnsForm['dimension'] = this.dimensions[dimension]['name'];
         }
@@ -95,6 +98,7 @@ export class AppComponent implements OnInit {
             this.columnsForm['measures'].push(this.measures[measure]['name']);
         }
         if (this.columnsForm['measures'].length > 0 && this.columnsForm['dimension']) {
+            this.spinner.show();
             this.pService.getColumnsData(this.columnsForm).subscribe(
                 result => {
                     this.columnDataResult = result;
@@ -110,13 +114,15 @@ export class AppComponent implements OnInit {
                     this.applyChart();
                 },
                 error => {
-                    this.toastr.error(error.message, 'Failed',);
+                    this.toastr.error(error.message, 'Failed');
+                    this.spinner.hide();
                 },
             );
         }
     }
 
     applyChart() {
+        debugger;
         this.chartOptions = {
             chart: {
                 type: 'line'
@@ -165,5 +171,6 @@ export class AppComponent implements OnInit {
             }
         };
         this.updateFlag = true;
+        this.spinner.hide();
     }
 }
