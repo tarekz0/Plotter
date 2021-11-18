@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     chartCategories = [];
     chartOptions: any;
     updateFlag = false;
+
     constructor(private pService: PlotterService, private spinner: NgxSpinnerService, private toastr: ToastrService) {
     }
 
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit {
                 this.columnsList = result;
             },
             error => {
-                this.toastr.error(error.message, 'Failed', );
+                this.toastr.error(error.message, 'Failed',);
             },
         );
     }
@@ -79,14 +80,14 @@ export class AppComponent implements OnInit {
             this.measures = [];
             this.columnsForm['measures'] = [];
         }
+        this.columnDataResult = undefined;
+        this.chartSeries = [];
+        this.chartCategories = [];
         this.columnsData();
     }
 
     columnsData() {
         this.columnsForm['measures'] = [];
-        this.columnDataResult = undefined;
-        this.chartSeries = [];
-        this.chartCategories = [];
         for (let dimension in this.dimensions) {
             this.columnsForm['dimension'] = this.dimensions[dimension]['name'];
         }
@@ -109,7 +110,7 @@ export class AppComponent implements OnInit {
                     this.applyChart();
                 },
                 error => {
-                    this.toastr.error(error.message, 'Failed', );
+                    this.toastr.error(error.message, 'Failed',);
                 },
             );
         }

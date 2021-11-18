@@ -1,31 +1,58 @@
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {AppComponent} from './app.component';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpClientModule} from '@angular/common/http';
+import {PlotterService} from './services/plotter.service';
+import {ToastrModule, ToastrService} from 'ngx-toastr';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  });
+    let component: AppComponent;
+    let fixture: ComponentFixture<AppComponent>;
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule, ToastrModule.forRoot()],
+            declarations: [
+                AppComponent
+            ],
+            providers: [PlotterService, {ToastrService, useClass: ToastrService}]
+        }).compileComponents();
+        fixture = TestBed.createComponent(AppComponent);
+        component = fixture.debugElement.componentInstance;
+    });
 
-  it(`should have as title 'Plotter'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('Plotter');
-  });
+    it('should create the app', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.componentInstance;
+        expect(app).toBeTruthy();
+    });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('Plotter app is running!');
-  });
+    it(`should have as title 'Plotter'`, () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.componentInstance;
+        expect(app.title).toEqual('Plotter');
+    });
+    it('should have get columns function', () => {
+        const service: PlotterService = TestBed.get(PlotterService);
+        expect(service.getPlotterColumns).toBeTruthy();
+    });
+    it('should have get columns function', () => {
+        const service: PlotterService = TestBed.get(PlotterService);
+        expect(service.getPlotterColumns).toBeTruthy();
+        service.getPlotterColumns().subscribe(
+            data => expect(data).toEqual([], 'should return the employee'),
+            fail
+        );
+    });
+    it('should get chart data', () => {
+        const service: PlotterService = TestBed.get(PlotterService);
+        const chartRequest = {dimension: 'Product', measures: ['Cost']};
+        service.getColumnsData(chartRequest).subscribe(
+            data => expect(data).toEqual([], 'should return the employee'),
+            fail
+        );
+    });
+    it('should clear lists bend on type', () => {
+
+    });
 });
